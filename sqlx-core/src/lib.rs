@@ -20,7 +20,7 @@
 extern crate bigdecimal_ as bigdecimal;
 
 #[macro_use]
-mod ext;
+pub mod ext;
 
 #[macro_use]
 pub mod error;
@@ -63,9 +63,9 @@ pub mod database;
 pub mod describe;
 pub mod executor;
 pub mod from_row;
-mod io;
-mod logger;
-mod net;
+pub mod io;
+pub mod logger;
+pub mod net;
 pub mod query_as;
 pub mod query_builder;
 pub mod query_scalar;

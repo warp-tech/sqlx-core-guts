@@ -2,21 +2,21 @@
 
 use crate::executor::Executor;
 
-mod arguments;
-mod column;
-mod connection;
-mod database;
-mod error;
-mod io;
-mod options;
-mod protocol;
-mod query_result;
-mod row;
-mod statement;
-mod transaction;
-mod type_info;
+pub mod arguments;
+pub mod column;
+pub mod connection;
+pub mod database;
+pub mod error;
+pub mod io;
+pub mod options;
+pub mod protocol;
+pub mod query_result;
+pub mod row;
+pub mod statement;
+pub mod transaction;
+pub mod type_info;
 pub mod types;
-mod value;
+pub mod value;
 
 pub use arguments::MssqlArguments;
 pub use column::MssqlColumn;

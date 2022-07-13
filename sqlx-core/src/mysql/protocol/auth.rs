@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::error::Error;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub enum AuthPlugin {
     MySqlNativePassword,
     CachingSha2Password,

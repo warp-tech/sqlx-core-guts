@@ -119,7 +119,7 @@ impl MySqlConnection {
                 (metadata.column_names, MySqlValueFormat::Binary, false)
             } else {
                 // https://dev.mysql.com/doc/internals/en/com-query.html
-                self.stream.send_packet(Query(sql)).await?;
+                self.stream.send_packet(Query(sql.to_string())).await?;
 
                 (Arc::default(), MySqlValueFormat::Text, true)
             };

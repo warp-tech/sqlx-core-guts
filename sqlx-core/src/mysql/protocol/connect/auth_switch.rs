@@ -1,7 +1,7 @@
-use bytes::{Buf, Bytes};
+use bytes::{Buf, Bytes, BufMut};
 
 use crate::error::Error;
-use crate::io::Encode;
+use crate::io::{Encode, BufMutExt};
 use crate::io::{BufExt, Decode};
 use crate::mysql::protocol::auth::AuthPlugin;
 use crate::mysql::protocol::Capabilities;
@@ -39,6 +39,16 @@ impl Decode<'_> for AuthSwitchRequest {
         Ok(Self { plugin, data })
     }
 }
+
+
+impl Encode<'_, ()> for AuthSwitchRequest {
+    fn encode_with(&self, buf: &mut Vec<u8>, _: ()) {
+        buf.put_u8(0xfe);
+        buf.put_str_nul(&self.plugin.name());
+        buf.extend(&self.data);
+    }
+}
+
 
 #[derive(Debug)]
 pub struct AuthSwitchResponse(pub Vec<u8>);

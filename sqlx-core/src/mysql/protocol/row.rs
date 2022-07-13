@@ -3,7 +3,7 @@ use std::ops::Range;
 use bytes::Bytes;
 
 #[derive(Debug)]
-pub(crate) struct Row {
+pub struct Row {
     pub(crate) storage: Bytes,
     pub(crate) values: Vec<Option<Range<usize>>>,
 }

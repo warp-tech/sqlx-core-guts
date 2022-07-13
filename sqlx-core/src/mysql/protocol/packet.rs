@@ -8,7 +8,7 @@ use crate::mysql::protocol::response::{EofPacket, OkPacket};
 use crate::mysql::protocol::Capabilities;
 
 #[derive(Debug)]
-pub struct Packet<T>(pub(crate) T);
+pub struct Packet<T>(pub T);
 
 impl<'en, 'stream, T> Encode<'stream, (Capabilities, &'stream mut u8)> for Packet<T>
 where

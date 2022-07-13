@@ -1,5 +1,5 @@
 use bytes::buf::Buf;
-use bytes::Bytes;
+use bytes::{Bytes, BytesMut};
 
 use crate::common::StatementCache;
 use crate::error::Error;
@@ -71,10 +71,10 @@ impl MySqlConnection {
         stream.write_packet(HandshakeResponse {
             collation: stream.collation as u8,
             max_packet_size: MAX_PACKET_SIZE,
-            username: &options.username,
-            database: options.database.as_deref(),
+            username: options.username.clone(),
+            database: options.database.clone(),
             auth_plugin: plugin,
-            auth_response: auth_response.as_deref(),
+            auth_response: auth_response.map(|x| BytesMut::from(&x[..]).freeze()),
         });
 
         stream.flush().await?;

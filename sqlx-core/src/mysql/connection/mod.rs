@@ -10,11 +10,11 @@ use futures_core::future::BoxFuture;
 use futures_util::FutureExt;
 use std::fmt::{self, Debug, Formatter};
 
-mod auth;
-mod establish;
-mod executor;
-mod stream;
-mod tls;
+pub mod auth;
+pub mod establish;
+pub mod executor;
+pub mod stream;
+pub mod tls;
 
 pub(crate) use stream::{MySqlStream, Waiting};
 

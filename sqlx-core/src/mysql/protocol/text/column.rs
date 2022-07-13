@@ -12,7 +12,7 @@ use crate::mysql::protocol::Capabilities;
 
 bitflags! {
     #[cfg_attr(feature = "offline", derive(serde::Serialize, serde::Deserialize))]
-    pub(crate) struct ColumnFlags: u16 {
+    pub struct ColumnFlags: u16 {
         /// Field can't be `NULL`.
         const NOT_NULL = 1;
 
@@ -100,7 +100,7 @@ pub enum ColumnType {
 // https://dev.mysql.com/doc/internals/en/com-query-response.html#packet-Protocol::ColumnDefinition41
 
 #[derive(Debug)]
-pub(crate) struct ColumnDefinition {
+pub struct ColumnDefinition {
     #[allow(unused)]
     catalog: Bytes,
     #[allow(unused)]

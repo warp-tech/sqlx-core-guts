@@ -1,8 +1,8 @@
 use bytes::buf::Chain;
-use bytes::{Buf, Bytes};
+use bytes::{Buf, Bytes, BufMut};
 
 use crate::error::Error;
-use crate::io::{BufExt, Decode};
+use crate::io::{BufExt, Decode, Encode, BufMutExt};
 use crate::mysql::protocol::auth::AuthPlugin;
 use crate::mysql::protocol::response::Status;
 use crate::mysql::protocol::Capabilities;
@@ -11,19 +11,19 @@ use crate::mysql::protocol::Capabilities;
 // https://mariadb.com/kb/en/connection/#initial-handshake-packet
 
 #[derive(Debug)]
-pub(crate) struct Handshake {
+pub struct Handshake {
     #[allow(unused)]
-    pub(crate) protocol_version: u8,
-    pub(crate) server_version: String,
+    pub protocol_version: u8,
+    pub server_version: String,
     #[allow(unused)]
-    pub(crate) connection_id: u32,
-    pub(crate) server_capabilities: Capabilities,
+    pub connection_id: u32,
+    pub server_capabilities: Capabilities,
     #[allow(unused)]
-    pub(crate) server_default_collation: u8,
+    pub server_default_collation: u8,
     #[allow(unused)]
-    pub(crate) status: Status,
-    pub(crate) auth_plugin: Option<AuthPlugin>,
-    pub(crate) auth_plugin_data: Chain<Bytes, Bytes>,
+    pub status: Status,
+    pub auth_plugin: Option<AuthPlugin>,
+    pub auth_plugin_data: Chain<Bytes, Bytes>,
 }
 
 impl Decode<'_> for Handshake {
@@ -86,6 +86,43 @@ impl Decode<'_> for Handshake {
             auth_plugin,
             auth_plugin_data: auth_plugin_data_1.chain(auth_plugin_data_2),
         })
+    }
+}
+
+
+impl Encode<'_, ()> for Handshake {
+    fn encode_with(&self, buf: &mut Vec<u8>, _: ()) {
+        buf.put_u8(self.protocol_version);
+        buf.put_str_nul(&self.server_version);
+        buf.put_u32_le(self.connection_id);
+        buf.put_slice(self.auth_plugin_data.first_ref());
+        buf.put_u8(0x00);
+        buf.put_u16_le((self.server_capabilities.bits() & 0x0000_FFFF) as u16);
+        buf.put_u8(self.server_default_collation);
+        buf.put_u16_le(self.status.bits());
+        buf.put_u16_le(((self.server_capabilities.bits() & 0xFFFF_0000) >> 16) as u16);
+
+        if self.server_capabilities.contains(Capabilities::PLUGIN_AUTH) {
+            buf.put_u8((self.auth_plugin_data.last_ref().len() + 8 + 1) as u8);
+        } else {
+            buf.put_u8(0);
+        }
+
+        buf.put_slice(&[0_u8; 10][..]);
+
+        if self
+            .server_capabilities
+            .contains(Capabilities::SECURE_CONNECTION)
+        {
+            buf.put_slice(self.auth_plugin_data.last_ref());
+            buf.put_u8(0);
+        }
+
+        if self.server_capabilities.contains(Capabilities::PLUGIN_AUTH) {
+            if let Some(auth_plugin) = self.auth_plugin {
+                buf.put_str_nul(auth_plugin.name());
+            }
+        }
     }
 }
 

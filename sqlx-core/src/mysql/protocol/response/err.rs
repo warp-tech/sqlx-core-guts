@@ -1,7 +1,7 @@
-use bytes::{Buf, Bytes};
+use bytes::{Buf, Bytes, BufMut};
 
 use crate::error::Error;
-use crate::io::{BufExt, Decode};
+use crate::io::{BufExt, Decode, Encode};
 use crate::mysql::protocol::Capabilities;
 
 // https://dev.mysql.com/doc/dev/mysql-server/8.0.12/page_protocol_basic_err_packet.html
@@ -43,6 +43,15 @@ impl Decode<'_, Capabilities> for ErrPacket {
             sql_state,
             error_message,
         })
+    }
+}
+
+impl Encode<'_, ()> for ErrPacket {
+    fn encode_with(&self, buf: &mut Vec<u8>, _: ()) {
+        buf.put_u8(0xff);
+        buf.put_u16_le(self.error_code);
+        buf.extend_from_slice(self.error_message.as_bytes())
+        //TODO: sql_state
     }
 }
 

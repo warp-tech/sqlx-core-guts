@@ -1,8 +1,8 @@
-use bytes::{Buf, Bytes};
+use bytes::{Buf, Bytes, BufMut};
 
 use crate::error::Error;
-use crate::io::Decode;
-use crate::mysql::io::MySqlBufExt;
+use crate::io::{Decode, Encode};
+use crate::mysql::io::{MySqlBufExt, MySqlBufMutExt};
 use crate::mysql::protocol::response::Status;
 
 /// Indicates successful completion of a previous command sent by the client.
@@ -35,6 +35,16 @@ impl Decode<'_> for OkPacket {
             status,
             warnings,
         })
+    }
+}
+
+impl Encode<'_, ()> for OkPacket {
+    fn encode_with(&self, buf: &mut Vec<u8>, _: ()) {
+        buf.put_u8(0);
+        buf.put_uint_lenenc(self.affected_rows);
+        buf.put_uint_lenenc(self.last_insert_id);
+        buf.put_u16_le(self.status.bits());
+        buf.put_u16_le(self.warnings);
     }
 }
 

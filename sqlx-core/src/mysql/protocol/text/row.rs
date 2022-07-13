@@ -7,7 +7,7 @@ use crate::mysql::protocol::Row;
 use crate::mysql::MySqlColumn;
 
 #[derive(Debug)]
-pub(crate) struct TextRow(pub(crate) Row);
+pub struct TextRow(pub(crate) Row);
 
 impl<'de> Decode<'de, &'de [MySqlColumn]> for TextRow {
     fn decode_with(mut buf: Bytes, columns: &'de [MySqlColumn]) -> Result<Self, Error> {

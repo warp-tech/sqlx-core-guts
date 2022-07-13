@@ -4,7 +4,7 @@ use crate::mysql::protocol::Capabilities;
 // https://dev.mysql.com/doc/internals/en/com-quit.html
 
 #[derive(Debug)]
-pub(crate) struct Quit;
+pub struct Quit;
 
 impl Encode<'_, Capabilities> for Quit {
     fn encode_with(&self, buf: &mut Vec<u8>, _: Capabilities) {

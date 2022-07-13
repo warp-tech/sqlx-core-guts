@@ -52,7 +52,7 @@ impl Encode<'_, Capabilities> for HandshakeResponse {
             if let Some(response) = &self.auth_response {
                 buf.put_bytes_lenenc(response);
             } else {
-                buf.push(0);
+                buf.put_bytes_lenenc(&[]);
             }
         } else if capabilities.contains(Capabilities::SECURE_CONNECTION) {
             if let Some(response) = &self.auth_response {

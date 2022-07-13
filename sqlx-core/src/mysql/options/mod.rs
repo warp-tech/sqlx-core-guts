@@ -53,17 +53,17 @@ pub use ssl_mode::MySqlSslMode;
 /// ```
 #[derive(Debug, Clone)]
 pub struct MySqlConnectOptions {
-    pub(crate) host: String,
-    pub(crate) port: u16,
-    pub(crate) socket: Option<PathBuf>,
-    pub(crate) username: String,
-    pub(crate) password: Option<String>,
-    pub(crate) database: Option<String>,
-    pub(crate) ssl_mode: MySqlSslMode,
-    pub(crate) ssl_ca: Option<CertificateInput>,
+    pub host: String,
+    pub port: u16,
+    pub socket: Option<PathBuf>,
+    pub username: String,
+    pub password: Option<String>,
+    pub database: Option<String>,
+    pub ssl_mode: MySqlSslMode,
+    pub ssl_ca: Option<CertificateInput>,
     pub(crate) statement_cache_capacity: usize,
-    pub(crate) charset: String,
-    pub(crate) collation: Option<String>,
+    pub charset: String,
+    pub collation: Option<String>,
     pub(crate) log_settings: LogSettings,
 }
 

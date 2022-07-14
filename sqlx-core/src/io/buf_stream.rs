@@ -82,6 +82,10 @@ where
     pub async fn read_raw_into(&mut self, buf: &mut BytesMut, cnt: usize) -> Result<(), Error> {
         read_raw_into(&mut self.stream, buf, cnt).await
     }
+
+    pub fn take(self) -> S {
+        self.stream
+    }
 }
 
 impl<S> Deref for BufStream<S>

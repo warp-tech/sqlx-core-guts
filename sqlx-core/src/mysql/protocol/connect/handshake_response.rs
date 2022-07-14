@@ -92,6 +92,7 @@ impl Decode<'_, &mut Capabilities> for HandshakeResponse {
 
         let partial_cap = Capabilities::from_bits_truncate(capabilities);
 
+
         if partial_cap.contains(Capabilities::MYSQL) {
             // reserved: string<4>
             buf.advance(4);
@@ -100,7 +101,16 @@ impl Decode<'_, &mut Capabilities> for HandshakeResponse {
         }
 
         let partial_cap = Capabilities::from_bits_truncate(capabilities);
-
+        if partial_cap.contains(Capabilities::SSL) && buf.is_empty() {
+            return Ok(HandshakeResponse {
+                collation,
+                max_packet_size,
+                username: "".to_string(),
+                auth_response: None,
+                auth_plugin: None,
+                database: None,
+            })
+        }
         let username = buf.get_str_nul()?;
 
         let auth_response = if partial_cap.contains(Capabilities::PLUGIN_AUTH_LENENC_DATA) {

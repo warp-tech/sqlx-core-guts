@@ -113,7 +113,7 @@ where
 }
 
 #[cfg(feature = "_tls-native-tls")]
-async fn configure_tls_connector(
+pub async fn configure_tls_connector(
     accept_invalid_certs: bool,
     accept_invalid_hostnames: bool,
     root_cert_path: Option<&CertificateInput>,
@@ -144,7 +144,7 @@ async fn configure_tls_connector(
 }
 
 #[cfg(feature = "_tls-rustls")]
-use self::rustls::configure_tls_connector;
+pub use self::rustls::configure_tls_connector;
 
 impl<S> AsyncRead for MaybeTlsStream<S>
 where

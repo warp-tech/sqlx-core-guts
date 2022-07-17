@@ -25,6 +25,8 @@ impl AuthPlugin {
 
             AuthPlugin::MySqlNativePassword => Ok(scramble_sha1(password, nonce).to_vec()),
 
+            AuthPlugin::MySqlClearPassword => Ok(password.as_bytes().to_vec()),
+
             // https://mariadb.com/kb/en/sha256_password-plugin/
             AuthPlugin::Sha256Password => encrypt_rsa(stream, 0x01, password, nonce).await,
         }
